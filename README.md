@@ -21,10 +21,15 @@ bun run Index.ts
 
 #### TO DO
 - Add More Tests
-- Add More Error Handling (Collect Errored Pins and Retry)
 - Add Docker Support
 - Add Ability for Scheduled Downloads (Cronjobs)
 - Add Support for Incremental Backups ()
 - Add Support For Multiple Boards Simultaneously or entering of username
+- Make fallback quality
+- If downloading multiple folders, split into multiple folders for each board
 
-- Fix JPG / PNG File Type Identification (PNG as source - maybe fallback to jpg as 3x quality instead of 4x)
+- Possibly look at mapping image URL to pin Ids for better download validation as well as being able to grab source file type
+without using fallback quality
+
+
+- Fix Getting Board URLS

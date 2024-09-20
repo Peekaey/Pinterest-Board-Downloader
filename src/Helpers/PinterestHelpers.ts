@@ -1,6 +1,11 @@
 import * as cheerio from "cheerio";
 import {firefox} from "playwright";
-import {parentBoardSelector, pinIdSelector} from "../GlobalConfigValues.ts";
+import {
+    pinIdValueSelector,
+    pinIdSelector,
+    pinBoardParentBoardSelector,
+    profileParentBoardSelector, pinBoardLinkSelector
+} from "../GlobalConfigValues.ts";
 
 // Gets the preview (lower quality) image URL for each pin in the board
 export const GetBoardImageURLs = async (boardURL: string): Promise<string[]> => {
@@ -16,7 +21,7 @@ export const GetBoardImageURLs = async (boardURL: string): Promise<string[]> => 
 
         let imageURLs: string[] = [];
 
-        webPageContent(parentBoardSelector).each((index: any,element:any) => {
+        webPageContent(pinBoardParentBoardSelector).each((index: any,element:any) => {
            const imageURL = webPageContent(element).attr('src');
            if (imageURL) {
                imageURLs.push(imageURL);
@@ -66,7 +71,7 @@ export const GetBoardPinIds = async (boardURL: string): Promise<string[]> => {
 
         const pinIds: string[] = [];
         webPageContent(pinIdSelector).each((index:any, element:any ) => {
-            let pinId = webPageContent(element).attr(pinIdSelector);
+            let pinId = webPageContent(element).attr(pinIdValueSelector);
             if (pinId) {
                 pinIds.push(pinId);
             }
@@ -78,6 +83,32 @@ export const GetBoardPinIds = async (boardURL: string): Promise<string[]> => {
         return [];
     }
 }
+
+export const GetBoardHrefLinksFromProfile = async (profileURL: string): Promise<string[]> => {
+    if (await isNullOrEmpty(profileURL)) {
+        return [];
+    }
+
+    try {
+        const webPageContent = await GetWebPageContent(profileURL);
+        if (!webPageContent) {
+            return [];
+        }
+
+        const boardURLs: string[] = [];
+        webPageContent(pinBoardLinkSelector).each((index: any, element: any) => {
+            let boardURL = webPageContent(element).attr('href');
+            if (boardURL) {
+                boardURLs.push(boardURL);
+            }
+        });
+        return boardURLs;
+    } catch (error) {
+        console.error("Error Fetching Profile Href Links: ", error);
+        return [];
+    }
+}
+
 
 
 const GetWebPageContent = async (boardURL: string): Promise<any> => {
